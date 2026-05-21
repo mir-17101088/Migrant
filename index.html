@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="robots" content="noindex">
   <title>The Perilous Journey — Khabir's 15-Month Ordeal</title>
-  <meta name="description" content="A geospatial reconstruction of Khabir's trafficking from Bangladesh through Dubai to Libya and back.">
+  <meta name="description"
+    content="A geospatial reconstruction of Khabir's trafficking from Bangladesh through Dubai to Libya and back.">
   <!--
   ╔══════════════════════════════════════════════════════════════════╗
   ║  KHABIR'S JOURNEY — SCROLLYTELLING MAP                          ║
@@ -22,7 +23,8 @@
   -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -151,11 +153,25 @@
       pointer-events: none;
     }
 
-    .step { height: 70vh; }
-    .step.intro-step { height: 100vh; }
-    .step.outro-step { height: 50vh; }
-    .step.chapter-step { height: 90vh; }
-    .step.reveal-step { height: 110vh; }
+    .step {
+      height: 70vh;
+    }
+
+    .step.intro-step {
+      height: 100vh;
+    }
+
+    .step.outro-step {
+      height: 50vh;
+    }
+
+    .step.chapter-step {
+      height: 90vh;
+    }
+
+    .step.reveal-step {
+      height: 110vh;
+    }
 
     /* ═══════════════════════════════════════
        CARDS — Warm Parchment Glass
@@ -604,34 +620,77 @@
        ANIMATIONS
     ═══════════════════════════════════════ */
     @keyframes hintPulse {
-      0%, 100% { opacity: 0.35; }
-      50% { opacity: 1; }
+
+      0%,
+      100% {
+        opacity: 0.35;
+      }
+
+      50% {
+        opacity: 1;
+      }
     }
 
     @keyframes arrowBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(6px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(6px);
+      }
     }
 
     @keyframes nodePulse {
-      0% { transform: scale(0.6); opacity: 1; }
-      100% { transform: scale(3); opacity: 0; }
+      0% {
+        transform: scale(0.6);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(3);
+        opacity: 0;
+      }
     }
 
     @keyframes markerGlow {
-      0% { box-shadow: 0 0 0 0 rgba(192, 136, 92, 0.5); }
-      70% { box-shadow: 0 0 0 14px rgba(192, 136, 92, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(192, 136, 92, 0); }
+      0% {
+        box-shadow: 0 0 0 0 rgba(192, 136, 92, 0.5);
+      }
+
+      70% {
+        box-shadow: 0 0 0 14px rgba(192, 136, 92, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(192, 136, 92, 0);
+      }
     }
 
     @keyframes barsFlicker {
-      0%, 100% { opacity: 0.12; }
-      50% { opacity: 0.22; }
+
+      0%,
+      100% {
+        opacity: 0.12;
+      }
+
+      50% {
+        opacity: 0.22;
+      }
     }
 
     @keyframes debtGlow {
-      0%, 100% { text-shadow: 0 0 15px rgba(184, 92, 58, 0.2); }
-      50% { text-shadow: 0 0 35px rgba(184, 92, 58, 0.5); }
+
+      0%,
+      100% {
+        text-shadow: 0 0 15px rgba(184, 92, 58, 0.2);
+      }
+
+      50% {
+        text-shadow: 0 0 35px rgba(184, 92, 58, 0.5);
+      }
     }
 
     /* ═══════════════════════════════════════
@@ -988,7 +1047,9 @@
       transition: opacity 0.5s ease;
     }
 
-    .route-path.visible { opacity: 1; }
+    .route-path.visible {
+      opacity: 1;
+    }
 
     .route-path.active-leg {
       stroke: var(--copper);
@@ -1091,7 +1152,9 @@
         scrollbar-width: none;
       }
 
-      .card::-webkit-scrollbar { display: none; }
+      .card::-webkit-scrollbar {
+        display: none;
+      }
 
       .card.intro-card,
       .card.outro-card {
@@ -1108,42 +1171,97 @@
         padding: 22px 20px !important;
       }
 
-      .card-route-title { font-size: 18px !important; }
+      .card-route-title {
+        font-size: 18px !important;
+      }
 
       .card-photo-wrap {
         width: 52px !important;
         height: 52px !important;
       }
 
-      .intro-headline { font-size: 20px !important; }
-      .intro-ghost-text { font-size: 48px !important; }
+      .intro-headline {
+        font-size: 20px !important;
+      }
+
+      .intro-ghost-text {
+        font-size: 48px !important;
+      }
 
       .card.intro-card {
         text-align: left !important;
         padding: 20px 22px !important;
       }
 
-      .card.outro-card { text-align: left !important; }
+      .card.outro-card {
+        text-align: left !important;
+      }
 
       .intro-kicker,
       .scroll-cue,
-      .intro-divider { margin-left: 0 !important; }
-      .intro-divider { margin: 14px 0 !important; }
-      .scroll-cue { align-items: flex-start !important; }
-      .outro-amount { font-size: 40px !important; }
-      .story-text, .story-quote { font-size: 13px !important; }
-      .chapter-title { font-size: 18px; }
-      .chapter-body { font-size: 12px; }
-      #chapter-dots { display: none; }
+      .intro-divider {
+        margin-left: 0 !important;
+      }
 
-      .cell-name { font-size: 26px !important; letter-spacing: 3px !important; }
-      .cell-stamp, .cell-stamp-right { top: 14px; font-size: 7px; }
-      .cell-stamp { left: 14px; }
-      .cell-stamp-right { right: 14px; }
+      .intro-divider {
+        margin: 14px 0 !important;
+      }
 
-      .debt-doc { padding: 24px 20px; }
-      .debt-amount { font-size: 16px; }
-      .debt-amount.total { font-size: 22px; }
+      .scroll-cue {
+        align-items: flex-start !important;
+      }
+
+      .outro-amount {
+        font-size: 40px !important;
+      }
+
+      .story-text,
+      .story-quote {
+        font-size: 13px !important;
+      }
+
+      .chapter-title {
+        font-size: 18px;
+      }
+
+      .chapter-body {
+        font-size: 12px;
+      }
+
+      #chapter-dots {
+        display: none;
+      }
+
+      .cell-name {
+        font-size: 26px !important;
+        letter-spacing: 3px !important;
+      }
+
+      .cell-stamp,
+      .cell-stamp-right {
+        top: 14px;
+        font-size: 7px;
+      }
+
+      .cell-stamp {
+        left: 14px;
+      }
+
+      .cell-stamp-right {
+        right: 14px;
+      }
+
+      .debt-doc {
+        padding: 24px 20px;
+      }
+
+      .debt-amount {
+        font-size: 16px;
+      }
+
+      .debt-amount.total {
+        font-size: 22px;
+      }
     }
 
     @media (max-width: 380px) {
@@ -1151,8 +1269,14 @@
         max-height: 38vh !important;
         padding: 14px 16px !important;
       }
-      .card-route-title { font-size: 16px !important; }
-      .intro-headline { font-size: 17px !important; }
+
+      .card-route-title {
+        font-size: 16px !important;
+      }
+
+      .intro-headline {
+        font-size: 17px !important;
+      }
     }
   </style>
 </head>
@@ -1225,21 +1349,21 @@
        ██████  DATA — [Lat, Lng] for Leaflet
     ══════════════════════════════════════════════════════ */
     const LOCATIONS = {
-      shariatpur:  [23.2355375, 90.4334379],
-      dhaka:       [23.8431441, 90.4053032],
-      dubai:       [25.0790538, 55.4796626],
-      alexandria:  [31.1991806, 29.8951716],
-      benghazi:    [32.1200168, 20.0812174],
-      tobruk:      [32.0773764, 23.9599988]
+      shariatpur: [23.2355375, 90.4334379],
+      dhaka: [23.8431441, 90.4053032],
+      dubai: [25.0790538, 55.4796626],
+      alexandria: [31.1991806, 29.8951716],
+      benghazi: [32.1200168, 20.0812174],
+      tobruk: [32.0773764, 23.9599988]
     };
 
     const JOURNEY_PATH = [
       { key: 'shariatpur', name: 'Shariatpur' },
-      { key: 'dhaka',      name: 'Dhaka' },
-      { key: 'dubai',      name: 'Dubai' },
+      { key: 'dhaka', name: 'Dhaka' },
+      { key: 'dubai', name: 'Dubai' },
       { key: 'alexandria', name: 'Alexandria' },
-      { key: 'benghazi',   name: 'Benghazi' },
-      { key: 'tobruk',     name: 'Tobruk' }
+      { key: 'benghazi', name: 'Benghazi' },
+      { key: 'tobruk', name: 'Tobruk' }
     ];
 
     /* ── Story-first step data ── */
@@ -1253,7 +1377,7 @@
         title: 'Leaving Home for the Promise of Italy',
         routeLabel: 'Shariatpur → Dhaka',
         body: 'Khabir left his home in Shariatpur for the capital, carrying the promise of passage to Italy. A broker had arranged everything — the route, the contacts, the price. All Khabir had to carry was hope.',
-        image: 'images/khabir-portrait.png',
+        image: 'abdur-rahman-director.png',
         imageCaption: 'Khabir before departure'
       },
       {
@@ -1275,7 +1399,7 @@
         from: 'dubai', to: 'alexandria',
         legIdx: 2,
         title: 'Nine Days in Dubai, Then Egypt',
-        routeLabel: 'Dubai → Alexandria',
+        routeLabel: 'Dubai → Alexandria, Egypt',
         body: 'Nine days in Dubai. Then a flight to Egypt. Alexandria was not a destination — it was a handoff point. The brokers changed. The language changed. The rules changed. From here, movement would no longer be by air.',
         image: null, imageCaption: null
       },
@@ -1286,7 +1410,7 @@
         from: 'alexandria', to: 'benghazi',
         legIdx: 3,
         title: 'Handed Over to a Bangla-Speaking Broker',
-        routeLabel: 'Alexandria → Benghazi',
+        routeLabel: 'Alexandria → Benghazi, Libya',
         body: 'That same day, Khabir was moved overland from Alexandria into Libya. At Benghazi, he was handed over to a Bangla-speaking broker — a fellow countryman who was now part of the trafficking network. The promise of Europe began to dissolve.',
         image: null, imageCaption: null
       },
@@ -1297,7 +1421,7 @@
         from: 'benghazi', to: 'tobruk',
         legIdx: 4,
         title: 'No Boat. No Italy. The Captivity Begins.',
-        routeLabel: 'Benghazi → Tobruk',
+        routeLabel: 'Benghazi → Tobruk, Libya',
         body: 'The final movement. Instead of heading north toward Europe, Khabir was driven east to Tobruk, a coastal city near the Egyptian border. He was placed under guard. There would be no boat. There would be no Italy. The journey was over. The captivity had begun.',
         image: null, imageCaption: null
       }
@@ -1305,9 +1429,9 @@
 
     const CHAPTERS = [
       { id: 'ch-gameghar', kind: 'gameghar' },
-      { id: 'ch-kidnap',   kind: 'kidnap' },
-      { id: 'ch-detained',  kind: 'detained' },
-      { id: 'ch-deport',   kind: 'deport' }
+      { id: 'ch-kidnap', kind: 'kidnap' },
+      { id: 'ch-detained', kind: 'detained' },
+      { id: 'ch-deport', kind: 'deport' }
     ];
 
     const CHAPTER_CARDS = {
