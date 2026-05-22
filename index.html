@@ -8,6 +8,10 @@
   <title>The Perilous Journey — Khabir's 15-Month Ordeal</title>
   <meta name="description"
     content="A geospatial reconstruction of Khabir's trafficking from Bangladesh through Dubai to Libya and back.">
+
+  <link rel="preload" href="image/gamehouse_sm.avif" as="image">
+  <link rel="preload" href="image/khabir_sm.avif" as="image" fetchpriority="high">
+  <link rel="preload" href="image/passport_sm.avif" as="image">
   <!--
   ╔══════════════════════════════════════════════════════════════════╗
   ║  KHABIR'S JOURNEY — SCROLLYTELLING MAP                          ║
@@ -51,8 +55,10 @@
       --copper-glow: rgba(192, 136, 92, 0.15);
       --sage: #6b9080;
       --sage-dim: rgba(107, 144, 128, 0.45);
-      --sand: #e2dcd0;
-      --sand-dim: rgba(226, 220, 208, 0.55);
+      --sand: #f4f0e6;
+      /* Brighter white-sand */
+      --sand-dim: rgba(244, 240, 230, 0.7);
+      /* More opaque */
       --parchment: #f5f0e8;
       --ember: #b85c3a;
       --ember-dim: rgba(184, 92, 58, 0.5);
@@ -103,8 +109,17 @@
       inset: 0;
       background: var(--bg-deep);
       /* ── Warm the map tiles ── */
-      filter: brightness(1.25) sepia(0.18) saturate(0.75) hue-rotate(-8deg);
+
     }
+
+    /* 🚀 OPTIMIZATION: Add this to filter ONLY the map tiles */
+    .leaflet-tile-pane {
+      filter: brightness(1.25) sepia(0.18) saturate(0.75) hue-rotate(-8deg);
+      will-change: filter, transform;
+      /* Hints the GPU to optimize this layer */
+    }
+
+
 
     /* Cinematic vignette — warm fade */
     #sticky-map::before {
@@ -195,6 +210,9 @@
       box-shadow:
         0 24px 48px rgba(0, 0, 0, 0.5),
         inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000px;
     }
 
     .card.active {
@@ -425,7 +443,7 @@
       font-size: 15px;
       color: var(--sand);
       line-height: 1.75;
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: 0.01em;
     }
 
@@ -497,7 +515,8 @@
     .intro-kicker {
       font-family: var(--font-ui);
       display: inline-block;
-      font-size: 9px;
+      font-size: 10px;
+      font-weight: 800;
       letter-spacing: 5px;
       text-transform: uppercase;
       color: var(--sage);
@@ -536,22 +555,43 @@
     }
 
     .scroll-cue {
-      display: flex;
+      display: inline-flex;
       flex-direction: column;
       align-items: center;
       gap: 6px;
       font-family: var(--font-ui);
-      font-size: 8px;
+      font-size: 9px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(226, 220, 208, 0.25);
+      color: var(--copper);
       animation: hintPulse 3s ease-in-out infinite;
+      cursor: pointer;
+      pointer-events: auto;
+      border: 1px solid var(--copper-dim);
+      padding: 10px 24px;
+      border-radius: 6px;
+      background: rgba(192, 136, 92, 0.08);
+      transition: all 0.3s ease;
+      margin: 0 auto;
+      outline: none;
+    }
+
+    .scroll-cue:hover {
+      background: var(--copper);
+      color: var(--bg-deep);
+      animation: none;
+      opacity: 1;
     }
 
     .scroll-arrow {
       font-size: 18px;
       color: var(--copper);
       animation: arrowBounce 2.2s ease-in-out infinite;
+      transition: color 0.3s ease;
+    }
+
+    .scroll-cue:hover .scroll-arrow {
+      color: var(--bg-deep);
     }
 
     /* ═══════════════════════════════════════
@@ -733,7 +773,7 @@
       font-size: clamp(13px, 1.6vw, 15px);
       color: var(--sand);
       line-height: 1.75;
-      font-weight: 400;
+      font-weight: 500;
     }
 
     /* ═══════════════════════════════════════
@@ -742,7 +782,7 @@
     #reveal-layer {
       position: absolute;
       inset: 0;
-      z-index: 350;
+      z-index: 470;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.7s ease;
@@ -862,7 +902,7 @@
     #docs-stage {
       position: absolute;
       inset: 0;
-      z-index: 340;
+      z-index: 480;
       pointer-events: none;
       display: flex;
       align-items: center;
@@ -872,14 +912,33 @@
       background: rgba(5, 3, 1, 0.85);
     }
 
+    @keyframes drawLine {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
     #docs-stage.visible {
       opacity: 1;
+    }
+
+    @keyframes floatDoc {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-8px) rotate(0.5deg);
+      }
     }
 
     .debt-stack {
       position: relative;
       width: 480px;
       max-width: 85vw;
+      animation: floatDoc 6s ease-in-out infinite;
     }
 
     .debt-doc {
@@ -978,6 +1037,25 @@
       line-height: 1.6;
     }
 
+    .route-path.return-path {
+      stroke-dasharray: 6 6;
+    }
+
+    .route-path.return-path.active-leg {
+      stroke: var(--ember);
+    }
+
+    /* Only apply the heavy shadow on desktop */
+    @media (min-width: 701px) {
+      .route-path.return-path.active-leg {
+        filter: drop-shadow(0 0 6px rgba(184, 92, 58, 0.6));
+      }
+    }
+
+    .route-path.return-path.completed-leg {
+      stroke: var(--ember-dim);
+    }
+
     /* ═══════════════════════════════════════
        JOURNEY NODE MARKERS
     ═══════════════════════════════════════ */
@@ -988,7 +1066,6 @@
       background: var(--copper);
       border-radius: 50%;
       border: 2px solid rgba(245, 240, 232, 0.7);
-      box-shadow: 0 0 12px 3px rgba(192, 136, 92, 0.35);
     }
 
     .journey-node::before {
@@ -1005,8 +1082,30 @@
       height: 20px;
       background: var(--ember);
       border-color: rgba(245, 240, 232, 0.9);
-      box-shadow: 0 0 18px 5px rgba(184, 92, 58, 0.4);
-      animation: markerGlow 2s ease-out infinite;
+
+    }
+
+    /* Add a pseudo-element to handle the glow using hardware acceleration */
+    .journey-node.active::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: rgba(184, 92, 58, 0.4);
+      z-index: -1;
+      animation: markerGlowAccel 2s ease-out infinite;
+    }
+
+    @keyframes markerGlowAccel {
+      0% {
+        transform: scale(0.8);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1.8);
+        opacity: 0;
+      }
     }
 
     .journey-node.visited {
@@ -1043,8 +1142,8 @@
       stroke: var(--sage);
       stroke-width: 2.5;
       opacity: 0;
-      filter: drop-shadow(0 0 4px rgba(107, 144, 128, 0.5));
       transition: opacity 0.5s ease;
+      will-change: stroke-dashoffset, opacity;
     }
 
     .route-path.visible {
@@ -1054,8 +1153,8 @@
     .route-path.active-leg {
       stroke: var(--copper);
       stroke-width: 3.5;
-      filter: drop-shadow(0 0 6px rgba(192, 136, 92, 0.6));
       opacity: 1;
+      transition: stroke-dashoffset 1.5s ease-in-out, opacity 0.5s ease;
     }
 
     .route-path.completed-leg {
@@ -1082,9 +1181,9 @@
     }
 
     /* ═══════════════════════════════════════
-       CHAPTER DOTS
+       NAVIGATION UI (Arrows + Dots)
     ═══════════════════════════════════════ */
-    #chapter-dots {
+    #scroll-nav-container {
       position: fixed;
       right: 22px;
       top: 50%;
@@ -1092,8 +1191,48 @@
       z-index: 600;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    #scroll-nav-container.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #chapter-dots {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: 10px;
       pointer-events: none;
+    }
+
+    .nav-btn {
+      background: rgba(28, 25, 20, 0.85);
+      border: 1px solid var(--copper-dim);
+      color: var(--copper);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.2s;
+      outline: none;
+      pointer-events: auto;
+    }
+
+    .nav-btn:hover {
+      background: var(--copper);
+      color: var(--bg-deep);
     }
 
     .c-dot {
@@ -1134,22 +1273,25 @@
     /* ═══════════════════════════════════════
        MOBILE RESPONSIVE
     ═══════════════════════════════════════ */
-    @media (max-width: 767px) {
+    @media (max-width: 700px) {
       .card {
         left: 10px !important;
         right: 10px !important;
         width: auto !important;
-        top: 50% !important;
-        bottom: auto !important;
-        max-height: 55vh !important;
+        top: auto !important;
+        bottom: 20px !important;
+        max-height: 45vh !important;
         overflow-y: auto !important;
         padding: 20px 22px !important;
-        background: rgba(19, 18, 15, 0.45) !important;
-        backdrop-filter: blur(24px) saturate(1.2) !important;
-        -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
+        background: rgba(19, 18, 15, 0.95) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+        /* Simplify the shadow */
         border-radius: 12px !important;
         -ms-overflow-style: none;
         scrollbar-width: none;
+
       }
 
       .card::-webkit-scrollbar {
@@ -1161,6 +1303,7 @@
         left: 10px !important;
         right: 10px !important;
         top: 50% !important;
+        bottom: auto !important;
         max-height: 60vh !important;
       }
 
@@ -1189,26 +1332,27 @@
       }
 
       .card.intro-card {
-        text-align: left !important;
+        text-align: center !important;
         padding: 20px 22px !important;
       }
 
       .card.outro-card {
-        text-align: left !important;
+        text-align: center !important;
       }
 
       .intro-kicker,
       .scroll-cue,
       .intro-divider {
-        margin-left: 0 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
       }
 
       .intro-divider {
-        margin: 14px 0 !important;
+        margin: 14px auto !important;
       }
 
       .scroll-cue {
-        align-items: flex-start !important;
+        align-items: center !important;
       }
 
       .outro-amount {
@@ -1286,8 +1430,12 @@
   <!-- Progress bar -->
   <div id="progress-bar"></div>
 
-  <!-- Chapter dots -->
-  <div id="chapter-dots"></div>
+  <!-- Navigation Controls -->
+  <div id="scroll-nav-container">
+    <button id="nav-up" class="nav-btn" aria-label="Previous step" onclick="scrollToStep(currentStepIdx - 1)">▲</button>
+    <div id="chapter-dots"></div>
+    <button id="nav-down" class="nav-btn" aria-label="Next step" onclick="scrollToStep(currentStepIdx + 1)">▼</button>
+  </div>
 
   <!-- Main scrolly container -->
   <div id="scrolly">
@@ -1377,7 +1525,7 @@
         title: 'Leaving Home for the Promise of Italy',
         routeLabel: 'Shariatpur → Dhaka',
         body: 'Khabir left his home in Shariatpur for the capital, carrying the promise of passage to Italy. A broker had arranged everything — the route, the contacts, the price. All Khabir had to carry was hope.',
-        image: 'abdur-rahman-director.png',
+        image: 'image/khabir_sm.avif',
         imageCaption: 'Khabir before departure'
       },
       {
@@ -1389,7 +1537,7 @@
         title: 'The Well-Worn Pipeline',
         routeLabel: 'Dhaka → Dubai',
         body: 'The next day, Khabir boarded a flight to Dubai — the well-worn first leg of the irregular route from South Asia toward the Mediterranean. The ticket was arranged. The documents were handled. He was one of hundreds passing through the same pipeline that month.',
-        image: 'images/khabir-passport.png',
+        image: 'image/passport_sm.avif',
         imageCaption: 'Travel document'
       },
       {
@@ -1438,7 +1586,8 @@
       'ch-gameghar': {
         eyebrow: 'Chapter VI · February 14, 2024',
         title: 'The "Game Ghar".',
-        body: 'Three months after arriving in Tobruk, Khabir was moved to a holding facility the captives called the "Game Ghar." No fans despite the Libyan heat. Food was scarce — one meal, sometimes none. Guards beat detainees with ropes and pipes. The violence was not punishment. It was routine.'
+        body: 'Three months after arriving in Tobruk, Khabir was moved to a holding facility the captives called the "Game Ghar." No fans despite the Libyan heat. Food was scarce — one meal, sometimes none. Guards beat detainees with ropes and pipes. The violence was not punishment. It was routine.',
+        image: 'image/gamehouse_sm.avif'
       },
       'ch-kidnap': {
         eyebrow: 'Chapter VII · Mid-2024',
@@ -1468,7 +1617,7 @@
     const TOTAL_STEPS = 1 + N_STEPS * 2 + CH + 1;
     const OUTRO_IDX = TOTAL_STEPS - 1;
 
-    const isMobile = () => window.innerWidth <= 767;
+    const isMobile = () => window.innerWidth <= 700;
 
     /* Build scroll pipe */
     const pipe = document.getElementById('scroll-pipe');
@@ -1524,12 +1673,12 @@
           <div class="intro-kicker">Trafficking Route Reconstruction</div>
           <h1 class="intro-headline">The road to Europe<br>that led to a prison.</h1>
           <div class="intro-divider"></div>
-          <p class="intro-subtext">A geospatial reconstruction of Khabir's 15-month ordeal — from Shariatpur to the Libyan desert and back.</p>
+          <p class="intro-subtext">Khabir's 15-month ordeal — from Shariatpur to the Libyan desert and back.</p>
           <div class="card-image-slot">
             <img src="images/khabir-portrait.png" alt="Khabir" onerror="this.parentElement.style.display='none';">
             <div class="img-caption">Khabir · Shariatpur, Bangladesh</div>
           </div>
-          <div class="scroll-cue">
+          <div class="scroll-cue" onclick="scrollToStep(1)">
             <span class="scroll-arrow">↓</span>
             <span>Scroll to begin</span>
           </div>
@@ -1542,7 +1691,7 @@
       const num = String(i + 1).padStart(2, '0');
       const imageSlot = p.image ? `
         <div class="card-image-slot">
-          <img src="${p.image}" alt="${p.imageCaption || ''}" onerror="this.parentElement.style.display='none';">
+          <img src="${p.image}" alt="${p.imageCaption || ''}" decoding="async" loading="lazy" onerror="this.parentElement.style.display='none';">
           ${p.imageCaption ? `<div class="img-caption">${p.imageCaption}</div>` : ''}
         </div>` : '';
 
@@ -1574,17 +1723,29 @@
     CHAPTERS.forEach(ch => {
       const c = CHAPTER_CARDS[ch.id];
       if (!c) return;
-      const imageSlotCh = (ch.kind === 'detained' || ch.kind === 'deport') ? `
-        <div class="card-image-slot" style="margin-top:16px;">
-          <img src="images/khabir-detention.png" alt="Detention" onerror="this.parentElement.style.display='none';">
-          <div class="img-caption">Detention conditions</div>
-        </div>` : '';
+
+      // Look at the data object first. If no specific image is set, fall back to the old logic.
+      let finalImageHTML = '';
+      if (c.image) {
+        finalImageHTML = `
+          <div class="card-image-slot" style="margin-top:16px;">
+            <img src="${c.image}" alt="${c.imageCaption || ''}" decoding="async" loading="lazy" onerror="this.parentElement.style.display='none';">
+            ${c.imageCaption ? `<div class="img-caption">${c.imageCaption}</div>` : ''}
+          </div>`;
+      } else if (ch.kind === 'detained' || ch.kind === 'deport') {
+        finalImageHTML = `
+          <div class="card-image-slot" style="margin-top:16px;">
+            <img src="images/khabir_smsas.avif" alt="Detention" decoding="async" loading="lazy" onerror="this.parentElement.style.display='none';">
+            <div class="img-caption">Detention conditions</div>
+          </div>`;
+      }
+
       overlay.insertAdjacentHTML('beforeend', `
         <div class="card chapter-card" id="card-${ch.id}">
           <div class="chapter-eyebrow">${c.eyebrow}</div>
           <h2 class="chapter-title">${c.title}</h2>
           <p class="chapter-body">${c.body}</p>
-          ${imageSlotCh}
+          ${finalImageHTML}
         </div>
       `);
     });
@@ -1650,16 +1811,29 @@
     const svgEl = document.getElementById('arc-svg');
     const routePaths = [];
 
-    for (let i = 0; i < JOURNEY_PATH.length - 1; i++) {
+    // Define the complete sequence, including the return journey
+    const ALL_CONNECTIONS = [
+      ['shariatpur', 'dhaka'],     // Index 0: Leg 01
+      ['dhaka', 'dubai'],          // Index 1: Leg 02
+      ['dubai', 'alexandria'],     // Index 2: Leg 03
+      ['alexandria', 'benghazi'],  // Index 3: Leg 04
+      ['benghazi', 'tobruk'],      // Index 4: Leg 05
+      ['tobruk', 'benghazi'],      // Index 5: Police Transfer
+      ['benghazi', 'dhaka'],       // Index 6: Deportation Flight
+      ['dhaka', 'shariatpur']      // Index 7: Return Home
+    ];
+
+    ALL_CONNECTIONS.forEach((pair, index) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.classList.add('route-path');
+      if (index >= 5) path.classList.add('return-path');
       svgEl.appendChild(path);
       routePaths.push({
         el: path,
-        from: LOCATIONS[JOURNEY_PATH[i].key],
-        to: LOCATIONS[JOURNEY_PATH[i + 1].key]
+        from: LOCATIONS[pair[0]],
+        to: LOCATIONS[pair[1]]
       });
-    }
+    });
 
     function calcArcD(from, to) {
       const p1 = map.latLngToContainerPoint(L.latLng(from[0], from[1]));
@@ -1676,8 +1850,18 @@
 
     function redrawRoutes() {
       routePaths.forEach(item => {
-        const { d } = calcArcD(item.from, item.to);
+        // Early Exit: If the path isn't visible, don't waste CPU calculating it
+        if (!item.el.classList.contains('visible')) return;
+
+        const { d, dist } = calcArcD(item.from, item.to); // dist is already calculated!
         item.el.setAttribute('d', d);
+
+        // 🚀 OPTIMIZATION: Delete the getTotalLength() DOM read. 
+        // An arc is roughly 1.05x the straight line distance. 
+        const approxLength = dist * 1.05;
+
+        item.el.style.strokeDasharray = approxLength;
+        item.el.style.strokeDashoffset = item.el.classList.contains('active-leg') ? '0' : approxLength;
       });
     }
 
@@ -1698,10 +1882,14 @@
       });
     }
 
-    function showAllRoutes() {
-      routePaths.forEach(item => {
-        item.el.classList.remove('active-leg');
-        item.el.classList.add('visible', 'completed-leg');
+    function setRouteLegsForChapter(completedUpToIdx, activeIdx = null) {
+      routePaths.forEach((item, i) => {
+        item.el.classList.remove('active-leg', 'completed-leg', 'visible');
+        if (i === activeIdx) {
+          item.el.classList.add('visible', 'active-leg');
+        } else if (i <= completedUpToIdx) {
+          item.el.classList.add('visible', 'completed-leg');
+        }
       });
     }
 
@@ -1770,8 +1958,24 @@
         const from = LOCATIONS[fromKey];
         const to = LOCATIONS[toKey];
         const bounds = L.latLngBounds([L.latLng(from[0], from[1]), L.latLng(to[0], to[1])]);
-        const padding = isMobile() ? [60, 60] : [120, 120];
-        map.flyToBounds(bounds.pad(0.3), { padding, duration: 1.5, maxZoom: 10 });
+
+        // 1. Define Top-Left Padding (Pushing from the left and top)
+        // Desktop needs 450px left to clear the card. Mobile just needs a 20px buffer.
+        const padTopLeft = isMobile() ? [20, 20] : [450, 120];
+
+        // 2. Define Bottom-Right Padding (Pushing from the right and bottom)
+        // Desktop just needs a 20px buffer. Mobile pushes up from the bottom by 50% of the screen height.
+        const padBottomRight = isMobile() ? [20, window.innerHeight * 0.5] : [20, 20];
+
+        map.stop();
+
+        // 3. Inject BOTH paddings into the options object
+        map.flyToBounds(bounds.pad(0.3), {
+          paddingTopLeft: padTopLeft,
+          paddingBottomRight: padBottomRight, // <-- This is the magic bullet for mobile
+          duration: 1.5,
+          maxZoom: 10
+        });
       }, delay);
     }
 
@@ -1779,6 +1983,7 @@
       if (flyTimeout) clearTimeout(flyTimeout);
       flyTimeout = setTimeout(() => {
         const coords = LOCATIONS[key];
+        map.stop();
         map.flyTo(coords, zoom || (isMobile() ? 8 : 9), { duration: 1.3 });
       }, delay);
     }
@@ -1823,17 +2028,22 @@
 
       updateDots(idx);
 
+      const navContainer = document.getElementById('scroll-nav-container');
       if (idx <= 0) {
+        if (navContainer) navContainer.classList.remove('visible');
         flyToFullJourney();
         hideAllRoutes(); hideAllNodes();
         hideReveal(); hideDocs();
         clearDots();
         return;
+      } else {
+        if (navContainer) navContainer.classList.add('visible');
       }
 
       if (idx >= OUTRO_IDX) {
         hideReveal(); hideDocs();
-        showAllRoutes(); showAllNodes();
+        setRouteLegsForChapter(7); // Show all 8 routes (0 through 7) as completed
+        showAllNodes();
         flyToFullJourney(60);
         return;
       }
@@ -1862,24 +2072,30 @@
       const chapter = CHAPTERS[chIdx];
       if (!chapter) return;
 
-      showAllRoutes(); showAllNodes();
+      showAllNodes(); // Ensure all visited nodes stay visible
 
       switch (chapter.kind) {
         case 'gameghar':
+          setRouteLegsForChapter(4); // Keep forward journey (0-4) visible
           hideDocs();
           flyToLocation('tobruk', isMobile() ? 10 : 11, 60);
           setTimeout(() => revealLayer.classList.add('visible'), 300);
           break;
         case 'kidnap':
+          setRouteLegsForChapter(4);
           hideReveal();
           flyToLocation('tobruk', isMobile() ? 9 : 10, 60);
           setTimeout(() => docsStage.classList.add('visible'), 200);
           break;
         case 'detained':
+          // Show forward journey completed, make Tobruk->Benghazi (Index 5) active!
+          setRouteLegsForChapter(4, 5);
           hideReveal(); hideDocs();
           flyToLocation('benghazi', isMobile() ? 9 : 10, 60);
           break;
         case 'deport':
+          // Keep up to Tobruk->Benghazi completed, make Benghazi->Dhaka (Index 6) active!
+          setRouteLegsForChapter(5, 6);
           hideReveal(); hideDocs();
           flyToBangladeshLibya(60);
           break;
@@ -1899,33 +2115,57 @@
       return ch ? `card-${ch.id}` : null;
     }
 
+    // 1. Setup the cache with geometric properties
+    let viewportHeight = window.innerHeight;
+
+    const stepsCache = Array.from(pipe.querySelectorAll('.step')).map((step, i) => {
+      return {
+        step: step,
+        card: document.getElementById(getCardId(i)),
+        top: 0,
+        height: 0,
+        mid: 0
+      };
+    });
+
+    // 2. Create a function to measure the DOM only when necessary
+    function measureDOM() {
+      viewportHeight = window.innerHeight;
+      stepsCache.forEach(item => {
+        item.top = item.step.offsetTop;
+        item.height = item.step.offsetHeight;
+        item.mid = item.top + item.height / 2;
+      });
+    }
+
+    // Measure once on load, and again if the window resizes
+    window.addEventListener('load', measureDOM);
+    window.addEventListener('resize', measureDOM);
+
+    // 3. The updated scroll function (Pure math, zero DOM querying!)
     function updateCardStyles() {
-      const steps = pipe.querySelectorAll('.step');
-      if (!steps.length) return;
+      if (!stepsCache.length) return;
       const scrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
       const viewportMid = scrollY + viewportHeight * 0.5;
 
       let activeIdx = 0;
-      for (let i = 0; i < steps.length; i++) {
-        if (steps[i].offsetTop <= viewportMid) activeIdx = i;
+      for (let i = 0; i < stepsCache.length; i++) {
+        // Look at our cached 'top' instead of step.offsetTop
+        if (stepsCache[i].top <= viewportMid) activeIdx = i;
         else break;
       }
 
       triggerMapActions(activeIdx);
 
-      steps.forEach((step, i) => {
-        const cardId = getCardId(i);
-        const card = document.getElementById(cardId);
+      stepsCache.forEach((item) => {
+        const card = item.card;
         if (!card) return;
 
-        const stepTop = step.offsetTop;
-        const stepHeight = step.offsetHeight;
-        const stepMid = stepTop + stepHeight / 2;
-
-        const dist = stepMid - viewportMid;
+        // Look at our cached 'mid'
+        const dist = item.mid - viewportMid;
         const normDist = dist / (viewportHeight * 0.8);
 
+        // ... The rest of your exact opacity and transform math stays the same ...
         let opacity = 0;
         let pointerEvents = 'none';
 
@@ -1941,32 +2181,43 @@
           card.classList.remove('active');
         }
 
-        card.style.opacity = Math.max(0, Math.min(1, opacity));
+        // Apply your specific mobile opacity curve if needed
+        if (isMobile()) {
+          opacity = Math.abs(normDist) < 1 ? Math.pow(1 - Math.abs(normDist), 1.8) : 0;
+        }
 
-        const yBase = -50;
-        const driftFactor = isMobile() ? 240 : 100;
+        const clampedOpacity = Math.max(0, Math.min(1, opacity));
+
+        // 🚀 THE THROTTLE: If the card is completely invisible, hide it and skip the math!
+        if (clampedOpacity === 0) {
+          if (card.style.visibility !== 'hidden') {
+            card.style.visibility = 'hidden';
+            card.style.opacity = 0;
+            card.style.pointerEvents = 'none';
+          }
+          return; // <-- This is the magic word. It tells the browser to stop here and skip the heavy DOM writes below.
+        }
+
+        // If we made it here, the card is in the viewport. Show it and do the math.
+        if (card.style.visibility === 'hidden') {
+          card.style.visibility = 'visible';
+        }
+
+        card.style.opacity = clampedOpacity;
+        card.style.pointerEvents = pointerEvents;
+
+        const isMob = isMobile();
+        const isCenterCard = card.classList.contains('intro-card') || card.classList.contains('outro-card');
+        const yBase = (isMob && !isCenterCard) ? 0 : -50;
+        const driftFactor = (isMob && !isCenterCard) ? 80 : (isMob ? 150 : 100);
         const yDrift = normDist * driftFactor;
         const finalY = yBase + yDrift;
 
-        if (isMobile()) {
-          card.style.opacity = Math.pow(1 - Math.abs(normDist), 1.8);
-        }
-
         if (card.classList.contains('outro-card')) {
           const clampedY = Math.max(-50, finalY);
-          const clampedOpacity = Math.min(1, Math.max(0, opacity));
-          card.style.opacity = clampedOpacity;
-          card.style.transform = isMobile()
-            ? `translateY(${clampedY}%)`
-            : `translate(-50%, ${clampedY}%)`;
-          card.style.pointerEvents = clampedOpacity > 0.05 ? 'auto' : 'none';
-          return;
-        }
-
-        if (card.classList.contains('intro-card')) {
-          card.style.transform = isMobile()
-            ? `translateY(${finalY}%)`
-            : `translate(-50%, ${finalY}%)`;
+          card.style.transform = isMob ? `translateY(${clampedY}%)` : `translate(-50%, ${clampedY}%)`;
+        } else if (card.classList.contains('intro-card')) {
+          card.style.transform = isMob ? `translateY(${finalY}%)` : `translate(-50%, ${finalY}%)`;
         } else {
           card.style.transform = `translateY(${finalY}%)`;
         }
@@ -1989,6 +2240,18 @@
     window.addEventListener('load', () => { setTimeout(updateCardStyles, 200); });
     updateCardStyles();
     setTimeout(updateCardStyles, 500);
+
+    window.scrollToStep = function (idx) {
+      if (idx < 0) idx = 0;
+      if (idx >= stepsCache.length) idx = stepsCache.length - 1;
+      const targetStep = stepsCache[idx];
+      if (targetStep) {
+        window.scrollTo({
+          top: targetStep.mid - window.innerHeight / 2,
+          behavior: 'smooth'
+        });
+      }
+    };
   </script>
 </body>
 
