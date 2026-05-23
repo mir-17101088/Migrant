@@ -27,11 +27,14 @@
   -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://a.basemaps.cartocdn.com" crossorigin>
+  <link rel="preconnect" href="https://b.basemaps.cartocdn.com" crossorigin>
+  <link rel="preconnect" href="https://c.basemaps.cartocdn.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
 
   <style>
     /* ═══════════════════════════════════════
@@ -115,8 +118,7 @@
     /* 🚀 OPTIMIZATION: Add this to filter ONLY the map tiles */
     .leaflet-tile-pane {
       filter: brightness(1.25) sepia(0.18) saturate(0.75) hue-rotate(-8deg);
-      will-change: filter, transform;
-      /* Hints the GPU to optimize this layer */
+
     }
 
 
@@ -153,6 +155,12 @@
       height: 100%;
       pointer-events: none;
       z-index: 400;
+      transition: opacity 0.3s ease;
+    }
+
+    .map-is-flying #arc-svg {
+      opacity: 0.15;
+      /* Dim during transit */
     }
 
     #cards-overlay {
@@ -197,10 +205,9 @@
       left: 5%;
       transform: translateY(-50%);
       width: 400px;
-      padding: 30px 32px;
-      background: var(--bg-card);
-      backdrop-filter: blur(20px) saturate(1.1);
-      -webkit-backdrop-filter: blur(20px) saturate(1.1);
+      padding: clamp(16px, 4vh, 30px) clamp(20px, 4vw, 32px);
+      background: rgba(28, 25, 20, 0.96);
+
       border: 1px solid rgba(192, 136, 92, 0.12);
       border-radius: 12px;
       opacity: 0;
@@ -213,6 +220,15 @@
       transform: translateZ(0);
       backface-visibility: hidden;
       perspective: 1000px;
+      max-height: 85vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+    }
+
+    .card::-webkit-scrollbar {
+      display: none;
     }
 
     .card.active {
@@ -234,7 +250,7 @@
       text-align: center;
       border: 1px solid rgba(192, 136, 92, 0.15);
       border-radius: 14px;
-      padding: 40px 44px;
+      padding: clamp(20px, 5vh, 40px) clamp(24px, 5vw, 44px);
     }
 
     /* Outro card — centered */
@@ -246,7 +262,7 @@
       text-align: center;
       border: 1px solid rgba(192, 136, 92, 0.15);
       border-radius: 14px;
-      padding: 36px 40px;
+      padding: clamp(16px, 4vh, 36px) clamp(20px, 5vw, 40px);
     }
 
     /* ═══════════════════════════════════════
@@ -324,7 +340,7 @@
     /* Image slots */
     .card-image-slot {
       width: 100%;
-      margin: 16px 0;
+      margin: clamp(8px, 2vh, 16px) 0;
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid rgba(192, 136, 92, 0.12);
@@ -335,6 +351,7 @@
     .card-image-slot img {
       width: 100%;
       height: auto;
+      max-height: clamp(120px, 22vh, 300px);
       display: block;
       object-fit: cover;
     }
@@ -356,10 +373,10 @@
     /* Journey leg title — BIG, story-focused */
     .card-route-title {
       font-family: var(--font-body);
-      font-size: 24px;
+      font-size: clamp(18px, 3.5vh, 24px);
       font-weight: 600;
       color: var(--parchment);
-      margin-bottom: 6px;
+      margin-bottom: clamp(2px, 1vh, 6px);
       line-height: 1.25;
       letter-spacing: -0.3px;
     }
@@ -411,7 +428,7 @@
 
     /* Detail / story blocks */
     .detail-block {
-      margin-bottom: 16px;
+      margin-bottom: clamp(8px, 1.5vh, 16px);
     }
 
     .detail-label {
@@ -440,9 +457,9 @@
     /* Story narrative — LARGE, readable, the focus */
     .story-text {
       font-family: var(--font-body);
-      font-size: 15px;
+      font-size: clamp(12px, 2.5vh, 15px);
       color: var(--sand);
-      line-height: 1.75;
+      line-height: 1.6;
       font-weight: 500;
       letter-spacing: 0.01em;
     }
@@ -786,10 +803,13 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.7s ease;
+      will-change: opacity;
+      transform: translateZ(0);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+
     }
 
     #reveal-layer.visible {
@@ -812,7 +832,7 @@
           transparent 55px,
           rgba(90, 70, 45, 0.10) 55px,
           rgba(90, 70, 45, 0.10) 59px);
-      animation: barsFlicker 4s ease-in-out infinite;
+
     }
 
     .cell-texture {
@@ -909,7 +929,30 @@
       justify-content: center;
       opacity: 0;
       transition: opacity 0.7s ease;
+      will-change: opacity;
+      transform: translateZ(0);
       background: rgba(5, 3, 1, 0.85);
+    }
+
+    /* Desktop: Push the ledger to the left side so the right-aligned card doesn't cover it */
+    @media (min-width: 701px) {
+      #docs-stage {
+        justify-content: flex-start;
+        padding-left: 8%;
+      }
+    }
+
+    /* Iframe & Mobile: Push the ledger toward the top, keeping it away from the bottom-locked text cards */
+    @media (max-width: 700px) {
+      #docs-stage {
+        align-items: flex-start;
+        padding-top: 8vh;
+      }
+
+      .debt-stack {
+        width: 360px;
+        /* Scales down the document to fit a 710px screen */
+      }
     }
 
     @keyframes drawLine {
@@ -1017,7 +1060,7 @@
       font-weight: 700;
       color: var(--ember);
       letter-spacing: -0.5px;
-      animation: debtGlow 3s ease-in-out infinite;
+
     }
 
     .debt-amount.total {
@@ -1223,8 +1266,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+
       transition: all 0.2s;
       outline: none;
       pointer-events: auto;
@@ -1274,6 +1316,36 @@
        MOBILE RESPONSIVE
     ═══════════════════════════════════════ */
     @media (max-width: 700px) {
+
+      #scroll-nav-container {
+        display: none !important;
+      }
+
+      #reveal-layer {
+        padding-bottom: 25vh;
+        /* ADD IT HERE INSTEAD */
+      }
+
+      #sticky-map::after {
+        display: none;
+      }
+
+      /* 1. Add an elegant scrollbar to the cards instead of hiding it */
+      .card::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .card::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .card::-webkit-scrollbar-thumb {
+        background: var(--copper-dim);
+        border-radius: 4px;
+      }
+
+
+
       .card {
         left: 10px !important;
         right: 10px !important;
@@ -1587,7 +1659,7 @@
         eyebrow: 'Chapter VI · February 14, 2024',
         title: 'The "Game Ghar".',
         body: 'Three months after arriving in Tobruk, Khabir was moved to a holding facility the captives called the "Game Ghar." No fans despite the Libyan heat. Food was scarce — one meal, sometimes none. Guards beat detainees with ropes and pipes. The violence was not punishment. It was routine.',
-        image: 'image/gamehouse_sm.avif'
+        image: null
       },
       'ch-kidnap': {
         eyebrow: 'Chapter VII · Mid-2024',
@@ -1761,7 +1833,7 @@
           <img src="images/khabir-return.png" alt="Khabir returns" onerror="this.parentElement.style.display='none';">
           <div class="img-caption">Khabir after return to Bangladesh</div>
         </div>
-        <p class="outro-body">Khabir returned to Bangladesh on January 26, 2025, through IOM's voluntary repatriation programme. He came back to Shariatpur with nothing except Tk 18 lakh in debt — the combined cost of the broker fees, the ransom, and the high-interest loans his family took to save his life.</p>
+        <p class="outro-body">On January 26, 2025, Khabir was voluntarily repatriated by IOM to Bangladesh, with nothing but a Tk 18 lakh debt.</p>
         <div class="outro-final-quote">My main focus now is to take care of my children and pay off the loans.</div>
       </div>
     `);
@@ -1866,7 +1938,27 @@
     }
 
     redrawRoutes();
-    map.on('move zoom viewreset', redrawRoutes);
+
+    let isRedrawing = false;
+    map.on('move zoom viewreset', () => {
+      if (!isRedrawing) {
+        window.requestAnimationFrame(() => {
+          redrawRoutes();
+          isRedrawing = false;
+        });
+        isRedrawing = true;
+      }
+
+    });
+    map.on('movestart', () => {
+      document.getElementById('sticky-map').classList.add('map-is-flying');
+    });
+
+    map.on('moveend', () => {
+      document.getElementById('sticky-map').classList.remove('map-is-flying');
+      // Force one perfect final redraw when the map stops
+      redrawRoutes();
+    });
 
     /* ══════════════════════════════════════════════════════
        ██████  STATE MANAGEMENT
@@ -1961,7 +2053,8 @@
 
         // 1. Define Top-Left Padding (Pushing from the left and top)
         // Desktop needs 450px left to clear the card. Mobile just needs a 20px buffer.
-        const padTopLeft = isMobile() ? [20, 20] : [450, 120];
+        const dynamicLeftPad = Math.min(450, window.innerWidth * 0.55);
+        const padTopLeft = isMobile() ? [20, 20] : [dynamicLeftPad, 120];
 
         // 2. Define Bottom-Right Padding (Pushing from the right and bottom)
         // Desktop just needs a 20px buffer. Mobile pushes up from the bottom by 50% of the screen height.
@@ -1973,7 +2066,7 @@
         map.flyToBounds(bounds.pad(0.3), {
           paddingTopLeft: padTopLeft,
           paddingBottomRight: padBottomRight, // <-- This is the magic bullet for mobile
-          duration: 1.5,
+          duration: isMobile() ? 0.8 : 1.5, // Faster on mobile
           maxZoom: 10
         });
       }, delay);
@@ -2215,11 +2308,11 @@
 
         if (card.classList.contains('outro-card')) {
           const clampedY = Math.max(-50, finalY);
-          card.style.transform = isMob ? `translateY(${clampedY}%)` : `translate(-50%, ${clampedY}%)`;
+          card.style.transform = isMob ? `translate3d(0, ${clampedY}%, 0)` : `translate3d(-50%, ${clampedY}%, 0)`;
         } else if (card.classList.contains('intro-card')) {
-          card.style.transform = isMob ? `translateY(${finalY}%)` : `translate(-50%, ${finalY}%)`;
+          card.style.transform = isMob ? `translate3d(0, ${finalY}%, 0)` : `translate3d(-50%, ${finalY}%, 0)`;
         } else {
-          card.style.transform = `translateY(${finalY}%)`;
+          card.style.transform = `translate3d(0, ${finalY}%, 0)`;
         }
 
         card.style.pointerEvents = pointerEvents;
