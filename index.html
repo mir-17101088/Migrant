@@ -940,6 +940,58 @@
       }
     }
 
+    /* Intermediate Desktop (e.g., 710px news iframes):
+       Reshape the debt ledger into a narrow vertical receipt so it fits 
+       perfectly in the empty space on the left, completely avoiding the right-aligned text cards. */
+    @media (min-width: 701px) and (max-width: 1100px) {
+      #docs-stage {
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 0;
+        padding-left: 15px;
+        z-index: 480; /* Restored original z-index, no longer overlapping */
+        transition: opacity 0.4s ease; /* Fast fade out */
+      }
+      #docs-stage.visible {
+        transition: opacity 0.7s ease 0.4s; /* Wait for card to settle before fading in */
+      }
+      .debt-stack {
+        width: calc(100vw - 550px); 
+        min-width: 145px;
+        max-width: 320px;
+      }
+      .debt-doc {
+        padding: 24px 16px;
+      }
+      .debt-header {
+        font-size: 8px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+      }
+      .debt-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 0;
+        gap: 6px;
+      }
+      .debt-label {
+        font-size: 9px;
+      }
+      .debt-amount {
+        font-size: 16px;
+      }
+      .debt-amount.total {
+        font-size: 20px;
+      }
+      .debt-note {
+        font-size: 10px;
+        line-height: 1.4;
+        margin-top: 16px;
+        padding-top: 12px;
+      }
+    }
+
     /* Iframe & Mobile: Push the ledger toward the top, keeping it away from the bottom-locked text cards */
     @media (max-width: 700px) {
       #docs-stage {
