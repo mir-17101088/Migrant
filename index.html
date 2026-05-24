@@ -652,26 +652,31 @@
     }
 
     .outro-final-quote {
-      margin-top: clamp(10px, 2.5vh, 20px);
-      padding: clamp(10px, 2vh, 16px) 20px;
-      background: rgba(107, 144, 128, 0.06);
-      border: 1px solid rgba(107, 144, 128, 0.15);
-      border-radius: 8px;
+      margin-top: clamp(12px, 3vh, 24px);
+      padding: clamp(14px, 2.5vh, 20px) 24px;
+      background: linear-gradient(145deg, rgba(192, 136, 92, 0.15), rgba(107, 144, 128, 0.05));
+      border: 1px solid rgba(192, 136, 92, 0.4);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
       font-family: var(--font-body);
-      font-size: clamp(12px, 2vh, 14px);
-      color: var(--parchment);
+      font-size: clamp(14px, 2.5vh, 17px);
+      font-weight: 500;
+      color: #ffffff;
       font-style: italic;
-      line-height: 1.65;
+      line-height: 1.6;
+      position: relative;
     }
 
     .outro-final-quote::before {
       content: '"';
       display: block;
-      font-size: 36px;
-      color: var(--sage-dim);
-      line-height: 1;
-      margin-bottom: 4px;
+      font-size: 48px;
+      color: var(--copper);
+      line-height: 0.5;
+      margin-bottom: 12px;
+      margin-top: 8px;
       font-style: normal;
+      text-shadow: 0 0 12px rgba(192, 136, 92, 0.6);
     }
 
     /* ═══════════════════════════════════════
@@ -1670,7 +1675,7 @@
         legIdx: 1,
         title: 'The Well-Worn Pipeline',
         routeLabel: 'Dhaka → Dubai',
-        body: 'The next day, Khabir boarded a flight to Dubai — the well-worn first leg of the irregular route from South Asia toward the Mediterranean. The ticket was arranged. The documents were handled. He was one of hundreds passing through the same pipeline that month.',
+        body: 'The next day, Khabir boarded a flight to Dubai — the well-worn first leg of the irregular route from South Asia towards the Middle East. The ticket was arranged. The documents were handled. He was one of many passing through the same pipeline that month.',
         image: 'image/passport_sm.avif',
         imageCaption: 'Passport'
       },
@@ -1682,7 +1687,7 @@
         legIdx: 2,
         title: 'Nine Days in Dubai, Then Egypt',
         routeLabel: 'Dubai → Alexandria, Egypt',
-        body: 'Nine days in Dubai. Then a flight to Egypt. Alexandria was not a destination — it was a handoff point. The brokers changed. The language changed. The rules changed. From here, movement would no longer be by air.',
+        body: 'He took a flight to Egypt after a nine days stay in Dubai. Alexandria was not a destination — it was a handoff point. The brokers changed. The language changed. The rules changed. From here, movement would no longer be by air.',
         image: null, imageCaption: null
       },
       {
@@ -1720,7 +1725,7 @@
       'ch-gameghar': {
         eyebrow: 'Chapter VI · February 14, 2024',
         title: 'The "Game Ghar".',
-        body: 'Three months after arriving in Tobruk, Khabir was moved to a holding facility the captives called the "Game Ghar." No fans despite the Libyan heat. Food was scarce — one meal, sometimes none. Guards beat detainees with ropes and pipes. The violence was not punishment. It was routine.',
+        body: 'Three months after arriving in Tobruk, Khabir was moved to a holding facility the captives called the "Game Ghar(House)." Despite the Libyan heat this large hall room had no fans. Food was scarce — sometimes one meal a day, sometimes none. Guards beat detainees with ropes and pipes for ransom. The violence was not punishment. It was routine.',
         image: 'image/game_house_sm.avif', imageCaption: 'AI-generated image of game house'
       },
       'ch-kidnap': {
@@ -1731,12 +1736,12 @@
       'ch-detained': {
         eyebrow: 'Chapter VIII · July 2024',
         title: 'Detained by Libyan Police.',
-        body: 'Libyan security forces raided the trafficking camp. Khabir was not rescued — he was arrested. He was sent to an overcrowded detention centre in Benghazi, where conditions were barely better than the traffickers\' camp. One meal a day. No legal representation. No consular access.'
+        body: 'Libyan security forces raided the trafficking camp. Khabir was not rescued — he was arrested. He was sent to an overcrowded detention centre in Benghazi, where conditions were barely better than the traffickers\' camp. Again, food was scarce often one meal a day. There was no legal representation & consular access.'
       },
       'ch-deport': {
         eyebrow: 'Chapter IX · Late 2024',
         title: 'Transfer to Deportation Centre.',
-        body: 'After months in the Benghazi detention facility, Khabir was transferred to a deportation processing centre. The International Organization for Migration (IOM) intervened, documenting his case and beginning the slow process of voluntary repatriation. The bureaucracy of return would take almost as long as the trafficking itself.'
+        body: 'After months in the Benghazi detention facility, Khabir was transferred to a deportation processing centre. The International Organization for Migration (IOM) intervened, documenting his case and beginning the slow process of voluntary repatriation.'
       }
     };
 
